@@ -17,8 +17,8 @@ export default class Game extends Component {
   render() {
     return (
       <Grid
-        width={10}
-        height={10}
+        width={30}
+        height={30}
       ></Grid>
     );
   }

@@ -1,6 +1,15 @@
+.Node-hidden {
+  background-position: 0 -39px;
+}
+
+.Node-flagged {
+  background-position: -16px -39px;
+}
+
 .Node {
-  width: 25px;
-  height: 25px;
+  background-image: url(sprite100.gif);
+  width: 16px;
+  height: 16px;
   outline-width: 1px;
   outline: 1px solid black;
   display: inline-block;

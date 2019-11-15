@@ -11,7 +11,7 @@ export default class Node extends Component {
     } = this.props;
 
     return (
-      <div className="Node">
+      <div className="Node Node-hidden">
 
       </div>
     )
