@@ -19,6 +19,7 @@ export default class Game extends Component {
       <Grid
         width={30}
         height={30}
+        mineCount={0}
       ></Grid>
     );
   }

@@ -11,7 +11,8 @@ export default class Grid extends Component {
       grid_width: this.props.width,
       grid_height: this.props.height,
       loading: true,
-      firstClick: false,
+      firstClick: true,
+      mineCount: this.props.mineCount,
     }
   }
 
@@ -19,6 +20,11 @@ export default class Grid extends Component {
     const {grid_width, grid_height} = this.state;
     const grid = CreateGrid(grid_width, grid_height);
     this.setState({grid, loading: false});
+  }
+
+  handleOnClick(row, col) {
+    const grid = LeftClick(this.state.grid, row, col);
+    this.setState(grid);
   }
 
   render() {
@@ -29,6 +35,7 @@ export default class Grid extends Component {
       );
     }
     return (
+      <>
       <div className="grid">
       {grid.map((row, rowIndex) => {
         return (
@@ -44,6 +51,7 @@ export default class Grid extends Component {
                   isHidden={isHidden}
                   isBomb={isBomb}
                   isFlag={isFlag}
+                  onClick={(row, col) => this.handleOnClick(row, col)}
                 ></Node>
               );
             })}
@@ -51,6 +59,7 @@ export default class Grid extends Component {
         );
       })}
     </div>
+    </>
     );
   }
 }
@@ -58,11 +67,11 @@ export default class Grid extends Component {
 const CreateGrid = (width, height) => {
   const grid = []
   for (let row = 0; row < height; row++) {
-    const row = []
+    const rowArr = []
     for (let col = 0; col < width; col++) {
-      row.push(CreateNode(row, col));
+      rowArr.push(CreateNode(row, col));
     }
-    grid.push(row);
+    grid.push(rowArr);
   }
   return (grid);
 };
@@ -77,3 +86,14 @@ const CreateNode = (row, col) => {
     isFlag: false,
   })
 };
+
+const LeftClick = (grid, row, col) => {
+  const newGrid = grid.slice();
+  const node = newGrid[row][col];
+  const newNode = {
+    ...node,
+    isHidden: false,
+  };
+  newGrid[row][col] = newNode;
+  return newGrid;
+}

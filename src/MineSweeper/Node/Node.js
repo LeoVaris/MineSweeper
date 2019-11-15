@@ -6,10 +6,13 @@ export default class Node extends Component {
   render() {
 
     const {
+      row,
+      col,
       bombsAround,
       isHidden,
       isBomb,
       isFlag,
+      onClick,
     } = this.props;
 
     let extraClassName = ''
@@ -19,9 +22,10 @@ export default class Node extends Component {
     else extraClassName = `Node-${bombsAround}`
 
     return (
-      <div className={`Node ${extraClassName}`}>
-
-      </div>
+      <div 
+        className={`Node ${extraClassName}`}
+        onClick={() => onClick(row, col)}
+      ></div>
     )
   }
 }

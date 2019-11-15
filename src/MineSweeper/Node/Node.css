@@ -1,9 +1,27 @@
+
+.Node {
+  background-image: url(sprite100.gif);
+  width: 16px;
+  height: 16px;
+  outline-width: 1px;
+  outline: 1px solid black;
+  display: inline-block;
+}
+
 .Node-hidden {
   background-position: 0 -39px;
 }
 
 .Node-flag {
   background-position: -16px -39px;
+}
+
+.Node-bomb {
+  background-position: -64px -39px;
+}
+
+.Node-bombhit {
+  background-position: -32px -39px;
 }
 
 .Node-0 {
@@ -40,21 +58,4 @@
 
 .Node-8 {
   background-position: -128px -23px;
-}
-
-.Node-bomb {
-  background-position: -64px -39px;
-}
-
-.Node-bombhit {
-  background-position: -32px -39px;
-}
-
-.Node {
-  background-image: url(sprite100.gif);
-  width: 16px;
-  height: 16px;
-  outline-width: 1px;
-  outline: 1px solid black;
-  display: inline-block;
 }
