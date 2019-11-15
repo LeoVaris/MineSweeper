@@ -26,8 +26,16 @@ export default class Grid extends Component {
 const CreateGrid = (width, height) => {
   grid = []
   for (let row = 0; row < height; row++) {
+    row = []
     for (let col = 0; col < width; col++) {
-
+      row.push()
     }
   }
-}
+};
+
+const CreateNode = (row, col) => {
+  return ({
+    row,
+    col
+  })
+};
