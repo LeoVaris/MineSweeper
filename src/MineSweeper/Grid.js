@@ -33,12 +33,16 @@ export default class Grid extends Component {
         return (
           <div key={rowIndex}>
             {row.map((node, nodeIndex) => {
-              const {row, col} = node;
+              const {row, col, bombsAround, isHidden, isFlag, isBomb} = node;
               return (
                 <Node 
                   key={nodeIndex}
                   col={col}
                   row={row}
+                  bombsAround={bombsAround}
+                  isHidden={isHidden}
+                  isBomb={isBomb}
+                  isFlag={isFlag}
                 ></Node>
               );
             })}
@@ -65,6 +69,10 @@ const CreateGrid = (width, height) => {
 const CreateNode = (row, col) => {
   return ({
     row,
-    col
+    col,
+    bombsAround: 0,
+    isHidden: false,
+    isBomb: false,
+    isFlag: false,
   })
 };

@@ -2,8 +2,52 @@
   background-position: 0 -39px;
 }
 
-.Node-flagged {
+.Node-flag {
   background-position: -16px -39px;
+}
+
+.Node-0 {
+  background-position: 0 -23px;
+}
+
+.Node-1 {
+  background-position: -16px -23px;
+}
+
+.Node-2 {
+  background-position: -32px -23px;
+}
+
+.Node-3 {
+  background-position: -48px -23px;
+}
+
+.Node-4 {
+  background-position: -64px -23px;
+}
+
+.Node-5 {
+  background-position: -80px -23px;
+}
+
+.Node-6 {
+  background-position: -96px -23px;
+}
+
+.Node-7 {
+  background-position: -112px -23px;
+}
+
+.Node-8 {
+  background-position: -128px -23px;
+}
+
+.Node-bomb {
+  background-position: -64px -39px;
+}
+
+.Node-bombhit {
+  background-position: -32px -39px;
 }
 
 .Node {

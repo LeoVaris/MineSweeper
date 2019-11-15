@@ -8,10 +8,20 @@ export default class Node extends Component {
     const {
       col, 
       row,
+      bombsAround,
+      isHidden,
+      isBomb,
+      isFlag,
     } = this.props;
 
+    let extraClassName = ''
+    if (isHidden) extraClassName = 'Node-hidden'
+    else if (isFlag) extraClassName = 'Node-flag'
+    else if (isBomb) extraClassName = 'Node-bomb'
+    else extraClassName = `Node-${bombsAround}`
+
     return (
-      <div className="Node Node-hidden">
+      <div className={`Node ${extraClassName}`}>
 
       </div>
     )
