@@ -6,8 +6,6 @@ export default class Node extends Component {
   render() {
 
     const {
-      col, 
-      row,
       bombsAround,
       isHidden,
       isBomb,

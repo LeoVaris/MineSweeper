@@ -11,6 +11,7 @@ export default class Grid extends Component {
       grid_width: this.props.width,
       grid_height: this.props.height,
       loading: true,
+      firstClick: false,
     }
   }
 
@@ -71,7 +72,7 @@ const CreateNode = (row, col) => {
     row,
     col,
     bombsAround: 0,
-    isHidden: false,
+    isHidden: true,
     isBomb: false,
     isFlag: false,
   })
