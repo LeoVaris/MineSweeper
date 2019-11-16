@@ -13,10 +13,12 @@ export default class Node extends Component {
       isBomb,
       isFlag,
       onClick,
+      gameWon,
     } = this.props;
 
     let extraClassName = ''
-    if (isHidden) extraClassName = 'Node-hidden'
+    if (isBomb && gameWon) extraClassName = 'Node-bomb'
+    else if (isHidden) extraClassName = 'Node-hidden'
     else if (isFlag) extraClassName = 'Node-flag'
     else if (isBomb) extraClassName = 'Node-bombhit'
     else extraClassName = `Node-${bombsAround}`

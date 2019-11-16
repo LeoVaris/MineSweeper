@@ -8,6 +8,7 @@ export default class Game extends Component {
     this.state = {
       loading: true,
       key: 0,
+      hasWon: false,
     }
   }
 
@@ -15,29 +16,55 @@ export default class Game extends Component {
     this.setState({loading: false});
   }
 
+  GridCallback = (data) => {
+    this.setState({hasWon: data});
+  }
+
   Restart = () => {
     let {key} = this.state;
     key++;
-    this.setState({key: key})
+    this.setState({key: key, hasWon: false})
   }
   
   render() {
-    const {key} = this.state;
+    const {key, loading, hasWon} = this.state;
+    if (loading) {
+      return ('Loading...');
+    }
     return (
       <>
+
         <button onClick={this.Restart}>
             Restart
         </button>
+        <WinMsg
+          hasWon={hasWon}
+        ></WinMsg>
         <div key={key}>
           <Grid
-            onRef={ref => (this.child = ref)}
-            width={30}
-            height={16}
-            mineCount={99}
+            parentCallback = {this.GridCallback}
+            onRef={ref => (this.grid = ref)}
+            width={9}
+            height={9}
+            mineCount={10}
           ></Grid>
         </div>
         
       </>
     );
+  }
+}
+
+function WinMsg(props) {
+  if (props.hasWon) {
+    return (<div>
+      You win!
+    </div>)
+  } else {
+    return (
+      <div>
+        Play
+      </div>
+    )
   }
 }

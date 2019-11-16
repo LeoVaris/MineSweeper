@@ -14,6 +14,7 @@ export default class Grid extends Component {
       firstClick: true,
       mineCount: this.props.mineCount,
       alive: true,
+      hasWon: false,
     }
   }
 
@@ -32,6 +33,11 @@ export default class Grid extends Component {
     return (this.state.alive);
   }
 
+  sendCallback() {
+    this.props.parentCallback(true);
+    UpdateWin(this.state.grid);
+  }
+
   handleOnClick(row, col) {
     const {firstClick, grid, mineCount, alive} = this.state;
     if (!alive) return;
@@ -43,6 +49,9 @@ export default class Grid extends Component {
       let newGrid = grid;
       const isAlive = LeftClick(newGrid, row, col);
       this.setState({grid: newGrid, alive: isAlive});
+    }
+    if (HiddenSquares(grid) === 0) {
+      this.sendCallback();
     }
   }
 
@@ -60,7 +69,7 @@ export default class Grid extends Component {
         return (
           <div key={rowIndex}>
             {row.map((node, nodeIndex) => {
-              const {row, col, bombsAround, isHidden, isFlag, isBomb} = node;
+              const {row, col, bombsAround, isHidden, isFlag, isBomb, gameWon} = node;
               return (
                 <Node 
                   key={nodeIndex}
@@ -70,6 +79,7 @@ export default class Grid extends Component {
                   isHidden={isHidden}
                   isBomb={isBomb}
                   isFlag={isFlag}
+                  gameWon={gameWon}
                   onClick={(row, col) => this.handleOnClick(row, col)}
                 ></Node>
               );
@@ -110,6 +120,7 @@ const CreateNode = (row, col) => {
     isHidden: true,
     isBomb: false,
     isFlag: false,
+    gameWon: false,
   })
 };
 
@@ -197,6 +208,14 @@ const UpdateMineCount = (grid) => {
   });
 }
 
+const UpdateWin = (grid) => {
+  grid.forEach(row => {
+    row.forEach(node => {
+      node.gameWon = true;
+    })
+  });
+}
+
 const CountNeighbors = (grid, row, col) => {
   const neighbors = [];
   const rows = grid.length-1;
@@ -239,7 +258,7 @@ const HiddenSquares = (grid) => {
   let count = 0;
   for (let row = 0; row < grid.length; row++) {
     for (let col = 0; col < grid[0].length; col++) {
-      if (grid[row][col].isHidden) {
+      if (grid[row][col].isHidden && !grid[row][col].isBomb) {
         count++;
       }
     }
