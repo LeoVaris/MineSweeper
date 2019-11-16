@@ -29,7 +29,8 @@ export default class Grid extends Component {
       const newGrid = FirstClick(grid, row, col, mineCount);
       this.setState({grid: newGrid, firstClick: false});
     } else {
-      const newGrid = LeftClick(this.state.grid, row, col);
+      let newGrid = grid;
+      LeftClick(newGrid, row, col);
       this.setState({grid: newGrid});
     }
   }
@@ -103,8 +104,8 @@ const CreateNode = (row, col) => {
 
 const LeftClick = (grid, row, col) => {
   const node = grid[row][col];
-  if (node.bombsAround !== 0 || node.isBomb || !node.isHidden) {
-    return (ClearSquare(grid, row, col));
+  if (node.bombsAround !== 0 || !node.isHidden) {
+    ClearSquare(grid, row, col);
   } else {
     ClearSquare(grid, row, col);
     let neighbors = getNeighbors(grid, row, col);
@@ -112,10 +113,14 @@ const LeftClick = (grid, row, col) => {
     //console.table(neighbors);
     neighbors = neighbors.filter(node => node.isHidden);
     //console.table(neighbors);
-    return (neighbors.forEach(node => {
-      return (LeftClick(grid, node.row, node.col));
-    }));
+    neighbors.forEach(node => {
+      LeftClick(grid, node.row, node.col);
+    });
   }
+}
+
+const BombFound = (grid, row, col) => {
+
 }
 
 const ClearSquare = (grid, row, col) => {
@@ -178,7 +183,7 @@ const UpdateMineCount = (grid) => {
 const CountNeighbors = (grid, row, col) => {
   const neighbors = [];
   const rows = grid.length-1;
-  const cols = grid.length-1;
+  const cols = grid[0].length-1;
   // Top row
   if (row > 0 && col > 0) neighbors.push(grid[row - 1][col - 1]);
   if (row > 0) neighbors.push(grid[row - 1][col]);
@@ -197,7 +202,7 @@ const CountNeighbors = (grid, row, col) => {
 const getNeighbors = (grid, row, col) => {
   const neighbors = [];
   const rows = grid.length-1;
-  const cols = grid.length-1;
+  const cols = grid[0].length-1;
   // Top row
   if (row > 0 && col > 0) neighbors.push(grid[row - 1][col - 1]);
   if (row > 0) neighbors.push(grid[row - 1][col]);
