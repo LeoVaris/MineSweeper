@@ -18,9 +18,18 @@ export default class Grid extends Component {
   }
 
   componentDidMount() {
+    this.props.onRef(this);
     const {grid_width, grid_height, mineCount} = this.state;
     const grid = CreateGrid(grid_width, grid_height, mineCount);
     this.setState({grid, loading: false});
+  }
+
+  componentWillUnmount() {
+    this.props.onRef(undefined)
+  }
+
+  isAlive() {
+    return (this.state.alive);
   }
 
   handleOnClick(row, col) {
@@ -224,4 +233,16 @@ const getNeighbors = (grid, row, col) => {
   if (row < rows && col < cols) neighbors.push(grid[row + 1][col + 1]);
 
   return neighbors;
+}
+
+const HiddenSquares = (grid) => {
+  let count = 0;
+  for (let row = 0; row < grid.length; row++) {
+    for (let col = 0; col < grid[0].length; col++) {
+      if (grid[row][col].isHidden) {
+        count++;
+      }
+    }
+  }
+  return count;
 }
