@@ -124,15 +124,14 @@ const CreateMines = (grid, mineCount) => {
     const pos = RandomPos(grid.length, grid[0].length);
     if (isMine(newGrid, pos.row, pos.col)) continue;
     newGrid = getNewGridWithMine(newGrid, pos.row, pos.col);
+    minesPut++;
   }
   return newGrid;
 }
 
 const RandomPos = (rows, cols) => {
-  const row = Math.floor(Math.random() * rows);
-  const col = Math.floor(Math.random() * cols);
   return ({
-    row: row,
-    col: col,
+    row: Math.floor(Math.random() * rows),
+    col: Math.floor(Math.random() * cols),
   })
 }
