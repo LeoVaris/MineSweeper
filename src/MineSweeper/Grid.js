@@ -73,6 +73,7 @@ const CreateGrid = (width, height) => {
     }
     grid.push(rowArr);
   }
+  CreateMines(grid, 30);
   return (grid);
 };
 
@@ -81,7 +82,7 @@ const CreateNode = (row, col) => {
     row,
     col,
     bombsAround: 0,
-    isHidden: true,
+    isHidden: false,
     isBomb: false,
     isFlag: false,
   })
@@ -96,4 +97,42 @@ const LeftClick = (grid, row, col) => {
   };
   newGrid[row][col] = newNode;
   return newGrid;
+}
+
+const getNewGridWithMine = (grid, row, col) => {
+  const newGrid = grid.slice();
+  const node = newGrid[row][col];
+  const newNode = {
+    ...node,
+    isBomb: true,
+  };
+  newGrid[row][col] = newNode;
+  return newGrid;
+}
+
+const isMine = (grid, row, col) => {
+  const newGrid = grid.slice();
+  const node = newGrid[row][col];
+  const {isBomb} = node;
+  return isBomb;
+}
+
+const CreateMines = (grid, mineCount) => {
+  let newGrid = grid;
+  let minesPut = 0;
+  while (minesPut < mineCount) {
+    const pos = RandomPos(grid.length, grid[0].length);
+    if (isMine(newGrid, pos.row, pos.col)) continue;
+    newGrid = getNewGridWithMine(newGrid, pos.row, pos.col);
+  }
+  return newGrid;
+}
+
+const RandomPos = (rows, cols) => {
+  const row = Math.floor(Math.random() * rows);
+  const col = Math.floor(Math.random() * cols);
+  return ({
+    row: row,
+    col: col,
+  })
 }
