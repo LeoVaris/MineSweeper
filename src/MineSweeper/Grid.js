@@ -13,6 +13,7 @@ export default class Grid extends Component {
       loading: true,
       firstClick: true,
       mineCount: this.props.mineCount,
+      alive: true,
     }
   }
 
@@ -23,15 +24,16 @@ export default class Grid extends Component {
   }
 
   handleOnClick(row, col) {
-    const {firstClick, grid, mineCount} = this.state;
+    const {firstClick, grid, mineCount, alive} = this.state;
+    if (!alive) return;
     
     if (firstClick) {
       const newGrid = FirstClick(grid, row, col, mineCount);
       this.setState({grid: newGrid, firstClick: false});
     } else {
       let newGrid = grid;
-      LeftClick(newGrid, row, col);
-      this.setState({grid: newGrid});
+      const isAlive = LeftClick(newGrid, row, col);
+      this.setState({grid: newGrid, alive: isAlive});
     }
   }
 
@@ -104,23 +106,29 @@ const CreateNode = (row, col) => {
 
 const LeftClick = (grid, row, col) => {
   const node = grid[row][col];
-  if (node.bombsAround !== 0 || !node.isHidden) {
+  if (node.isBomb) {
+    BombFound(grid, row, col);
+    return false;
+  } else if (node.bombsAround !== 0 || !node.isHidden) {
     ClearSquare(grid, row, col);
   } else {
     ClearSquare(grid, row, col);
     let neighbors = getNeighbors(grid, row, col);
-    //console.log(node);
-    //console.table(neighbors);
     neighbors = neighbors.filter(node => node.isHidden);
-    //console.table(neighbors);
     neighbors.forEach(node => {
       LeftClick(grid, node.row, node.col);
     });
   }
+  return true;
 }
 
 const BombFound = (grid, row, col) => {
-
+  const node = grid[row][col];
+  const newNode = {
+    ...node,
+    isHidden: false,
+  }
+  grid[row][col] = newNode;
 }
 
 const ClearSquare = (grid, row, col) => {

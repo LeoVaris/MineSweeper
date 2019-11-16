@@ -16,11 +16,13 @@ export default class Game extends Component {
   
   render() {
     return (
-      <Grid
-        width={30}
-        height={16}
-        mineCount={99}
-      ></Grid>
+      <>
+        <Grid
+          width={30}
+          height={16}
+          mineCount={99}
+        ></Grid>
+      </>
     );
   }
 }

@@ -18,7 +18,7 @@ export default class Node extends Component {
     let extraClassName = ''
     if (isHidden) extraClassName = 'Node-hidden'
     else if (isFlag) extraClassName = 'Node-flag'
-    else if (isBomb) extraClassName = 'Node-bomb'
+    else if (isBomb) extraClassName = 'Node-bombhit'
     else extraClassName = `Node-${bombsAround}`
 
     return (
