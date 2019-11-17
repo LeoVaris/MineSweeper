@@ -29,7 +29,11 @@ export default class Grid extends Component {
   }
 
   sendWinCallback() {
-    this.props.parentCallback(true);
+    const data = {
+      from: 'grid-win',
+      hasWon: true,
+    };
+    this.props.parentCallback(data);
     UpdateWin(this.state.grid);
   }
 
@@ -146,6 +150,9 @@ const RightClick = (grid, row, col) => {
 
 const LeftClick = (grid, row, col) => {
   const node = grid[row][col];
+  if (node.isFlag) {
+    return true;
+  }
   if (node.isBomb) {
     BombFound(grid, row, col);
     return false;

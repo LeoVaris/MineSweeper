@@ -16,8 +16,12 @@ export default class Game extends Component {
     this.setState({loading: false});
   }
 
-  GridCallback = (data) => {
-    this.setState({hasWon: data});
+  Callback = (data) => {
+    const {from} = data;
+    if (from === 'grid-win') {
+      const {hasWon} = data;
+      this.setState({hasWon: hasWon});
+    }
   }
 
   Restart = () => {
@@ -25,20 +29,9 @@ export default class Game extends Component {
     key++;
     this.setState({key: key, hasWon: false})
   }
-
-  handleClick = (e) => {
-    e.preventDefault();
-    console.log(e.type);
-    if (e.type === 'click') {
-      console.log("Left");
-    } else if (e.type === 'contextmenu') {
-      console.log("Right");
-    }
-    return false;
-  }
   
   render() {
-    const {key, loading, hasWon} = this.state;
+    const {key, loading, currentOption} = this.state;
     if (loading) {
       return ('Loading...');
     }
@@ -47,39 +40,17 @@ export default class Game extends Component {
         <button onClick={this.Restart}>
             Restart
         </button>
-        <button
-          onClick={this.handleClick}
-          onContextMenu={this.handleClick}>
-          Test
-        </button>
-        <WinMsg
-          hasWon={hasWon}
-        ></WinMsg>
         <div key={key}>
           <Grid
             onContextMenu={this.handleClick}
-            parentCallback = {this.GridCallback}
+            parentCallback = {this.Callback}
             width={9}
             height={9}
-            mineCount={10}
+            mineCount={1}
           ></Grid>
         </div>
         
       </>
     );
-  }
-}
-
-function WinMsg(props) {
-  if (props.hasWon) {
-    return (<div>
-      You win!
-    </div>)
-  } else {
-    return (
-      <div>
-        Play
-      </div>
-    )
   }
 }

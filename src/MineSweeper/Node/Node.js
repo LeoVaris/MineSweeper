@@ -19,16 +19,18 @@ export default class Node extends Component {
     } = this.props;
 
     let extraClassName = ''
-
+    // Determines whats shown to user (Different according to gamestate)
     if (gameLost) {
-      if (isFlag) extraClassName = 'Node-flag'
+      if (isFlag && !isBomb) extraClassName = 'Node-wrongflag'
+      else if (isFlag) extraClassName = 'Node-flag'
       else if (isBomb && !isHidden) extraClassName = 'Node-bombhit'
       else if (isBomb) extraClassName = 'Node-bomb'
       else if (isHidden) extraClassName = 'Node-hidden'
       else extraClassName = `Node-${bombsAround}`
     }
     else if (gameWon) {
-      if (isBomb) extraClassName = 'Node-bomb'
+      if (isFlag) extraClassName = 'Node-flag'
+      else if (isBomb) extraClassName = 'Node-bomb'
       else if (isHidden) extraClassName = 'Node-hidden'
       else extraClassName = `Node-${bombsAround}`
     }
