@@ -13,6 +13,7 @@ export default class Node extends Component {
       isBomb,
       isFlag,
       onClick,
+      onContextMenu,
       gameWon,
       gameLost,
     } = this.props;
@@ -20,7 +21,8 @@ export default class Node extends Component {
     let extraClassName = ''
 
     if (gameLost) {
-      if (isBomb && !isHidden) extraClassName = 'Node-bombhit'
+      if (isFlag) extraClassName = 'Node-flag'
+      else if (isBomb && !isHidden) extraClassName = 'Node-bombhit'
       else if (isBomb) extraClassName = 'Node-bomb'
       else if (isHidden) extraClassName = 'Node-hidden'
       else extraClassName = `Node-${bombsAround}`
@@ -31,8 +33,8 @@ export default class Node extends Component {
       else extraClassName = `Node-${bombsAround}`
     }
     else {
-      if (isHidden) extraClassName = 'Node-hidden'
-      else if (isFlag) extraClassName = 'Node-flag'
+      if (isFlag) extraClassName = 'Node-flag'
+      else if (isHidden) extraClassName = 'Node-hidden'
       else if (isBomb) extraClassName = 'Node-bombhit'
       else extraClassName = `Node-${bombsAround}`
     }
@@ -40,6 +42,7 @@ export default class Node extends Component {
       <div 
         className={`Node ${extraClassName}`}
         onClick={() => onClick(row, col)}
+        onContextMenu={(e) => onContextMenu(e, row, col)}
       ></div>
     )
   }

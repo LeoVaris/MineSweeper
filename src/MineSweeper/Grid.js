@@ -53,6 +53,12 @@ export default class Grid extends Component {
     }
   }
 
+  handleContextMenu = (e, row, col) => {
+    e.preventDefault();
+    const newGrid = RightClick(this.state.grid, row, col);
+    this.setState({grid: newGrid});
+  }
+
   render() {
     const {grid, loading} = this.state;
     if (loading) {
@@ -79,6 +85,7 @@ export default class Grid extends Component {
                   isFlag={isFlag}
                   gameWon={gameWon}
                   gameLost={gameLost}
+                  onContextMenu={(e, row, col) => this.handleContextMenu(e, row, col)}
                   onClick={(row, col) => this.handleOnClick(row, col)}
                 ></Node>
               );
@@ -124,6 +131,19 @@ const CreateNode = (row, col) => {
   })
 };
 
+const RightClick = (grid, row, col) => {
+  const newGrid = grid.slice();
+  const node = newGrid[row][col];
+  if (!node.isHidden) return grid;
+  const value = !node.isFlag;
+  const newNode = {
+    ...node,
+    isFlag: value,
+  }
+  newGrid[row][col] = newNode;
+  return newGrid;
+}
+
 const LeftClick = (grid, row, col) => {
   const node = grid[row][col];
   if (node.isBomb) {
@@ -134,7 +154,7 @@ const LeftClick = (grid, row, col) => {
   } else {
     ClearSquare(grid, row, col);
     let neighbors = getNeighbors(grid, row, col);
-    neighbors = neighbors.filter(node => node.isHidden);
+    neighbors = neighbors.filter(node => node.isHidden && !node.isFlag);
     neighbors.forEach(node => {
       LeftClick(grid, node.row, node.col);
     });
