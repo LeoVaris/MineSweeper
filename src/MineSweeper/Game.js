@@ -43,7 +43,6 @@ export default class Game extends Component {
         <div key={key}>
           <Grid
             parentCallback = {this.GridCallback}
-            onRef={ref => (this.grid = ref)}
             width={9}
             height={9}
             mineCount={10}

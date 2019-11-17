@@ -19,21 +19,16 @@ export default class Grid extends Component {
   }
 
   componentDidMount() {
-    this.props.onRef(this);
     const {grid_width, grid_height, mineCount} = this.state;
     const grid = CreateGrid(grid_width, grid_height, mineCount);
     this.setState({grid, loading: false});
-  }
-
-  componentWillUnmount() {
-    this.props.onRef(undefined)
   }
 
   isAlive() {
     return (this.state.alive);
   }
 
-  sendCallback() {
+  sendWinCallback() {
     this.props.parentCallback(true);
     UpdateWin(this.state.grid);
   }
@@ -48,10 +43,13 @@ export default class Grid extends Component {
     } else {
       let newGrid = grid;
       const isAlive = LeftClick(newGrid, row, col);
+      if (!isAlive) {
+        UpdateLoss(newGrid);
+      }
       this.setState({grid: newGrid, alive: isAlive});
     }
     if (HiddenSquares(grid) === 0) {
-      this.sendCallback();
+      this.sendWinCallback();
     }
   }
 
@@ -69,7 +67,7 @@ export default class Grid extends Component {
         return (
           <div key={rowIndex}>
             {row.map((node, nodeIndex) => {
-              const {row, col, bombsAround, isHidden, isFlag, isBomb, gameWon} = node;
+              const {row, col, bombsAround, isHidden, isFlag, isBomb, gameWon, gameLost} = node;
               return (
                 <Node 
                   key={nodeIndex}
@@ -80,6 +78,7 @@ export default class Grid extends Component {
                   isBomb={isBomb}
                   isFlag={isFlag}
                   gameWon={gameWon}
+                  gameLost={gameLost}
                   onClick={(row, col) => this.handleOnClick(row, col)}
                 ></Node>
               );
@@ -121,6 +120,7 @@ const CreateNode = (row, col) => {
     isBomb: false,
     isFlag: false,
     gameWon: false,
+    gameLost: false,
   })
 };
 
@@ -212,6 +212,14 @@ const UpdateWin = (grid) => {
   grid.forEach(row => {
     row.forEach(node => {
       node.gameWon = true;
+    })
+  });
+}
+
+const UpdateLoss = (grid) => {
+  grid.forEach(row => {
+    row.forEach(node => {
+      node.gameLost = true;
     })
   });
 }
