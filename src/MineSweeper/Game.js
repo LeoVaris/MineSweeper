@@ -121,7 +121,7 @@ export default class Game extends Component {
               <br/>Height:
               <input className="custom-input" type="number" name="height" autoComplete="off" min={1} max={100} onChange={(e) => this.handleCustomGame(e, 1)}/>
             </label>
-            <label>
+            <label> 
               <br/>Bombs:
               <input className="custom-input" type="number" name="bombs" autoComplete="off" min={0} max={200} onChange={(e) => this.handleCustomGame(e, 2)}/>
             </label>

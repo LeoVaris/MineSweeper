@@ -98,7 +98,7 @@ export default class Grid extends Component {
                   isHidden={isHidden}
                   isBomb={isBomb}
                   isFlag={isFlag}
-                  gameWon={gameWon}
+                  gameWon={gameWon} 
                   gameLost={gameLost}
                   onContextMenu={(e, row, col) => this.handleContextMenu(e, row, col)}
                   onClick={(row, col) => this.handleOnClick(row, col)}

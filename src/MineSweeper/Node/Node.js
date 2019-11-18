@@ -40,7 +40,7 @@ export default class Node extends Component {
       else if (isBomb) extraClassName = 'Node-bombhit'
       else extraClassName = `Node-${bombsAround}`
     }
-    return (
+    return ( 
       <div 
         className={`Node ${extraClassName}`}
         onClick={() => onClick(row, col)}
