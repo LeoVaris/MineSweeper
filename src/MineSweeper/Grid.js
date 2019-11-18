@@ -37,6 +37,15 @@ export default class Grid extends Component {
     UpdateWin(this.state.grid);
   }
 
+  sendMineCountCallback(flags) {
+    const minesLeft = this.state.mineCount - flags;
+    const data = {
+      from: 'grid-minecount',
+      minesLeft: minesLeft,
+    }
+    this.props.parentCallback(data);
+  }
+
   handleOnClick(row, col) {
     const {firstClick, grid, mineCount, alive} = this.state;
     if (!alive) return;
@@ -61,6 +70,8 @@ export default class Grid extends Component {
     e.preventDefault();
     const newGrid = RightClick(this.state.grid, row, col);
     this.setState({grid: newGrid});
+    const flags = Flags(this.state.grid);
+    this.sendMineCountCallback(flags);
   }
 
   render() {
@@ -241,6 +252,16 @@ const UpdateWin = (grid) => {
       node.gameWon = true;
     })
   });
+}
+
+const Flags = (grid) => {
+  let count = 0;
+  grid.forEach(row => {
+    row.forEach(node => {
+      if (node.isFlag) count++;
+    })
+  })
+  return count;
 }
 
 const UpdateLoss = (grid) => {
