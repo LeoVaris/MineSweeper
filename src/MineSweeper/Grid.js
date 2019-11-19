@@ -15,6 +15,7 @@ export default class Grid extends Component {
       mineCount: this.props.mineCount,
       alive: true,
       hasWon: false,
+      time: 0,
     }
   }
 
@@ -22,10 +23,6 @@ export default class Grid extends Component {
     const {grid_width, grid_height, mineCount} = this.state;
     const grid = CreateGrid(grid_width, grid_height, mineCount);
     this.setState({grid, loading: false});
-  }
-
-  isAlive() {
-    return (this.state.alive);
   }
 
   sendWinCallback() {
@@ -46,23 +43,41 @@ export default class Grid extends Component {
     this.props.parentCallback(data);
   }
 
+  startTimer() {
+    this.timer = setInterval(() => this.setState({
+      time: this.state.time + 1
+    }), 1000);
+  }
+
+  stopTimer() {
+    clearInterval(this.timer);
+  }
+
+  resetTimer() {
+    this.setState({time: 0});
+  }
+
   handleOnClick(row, col) {
     const {firstClick, grid, mineCount, alive} = this.state;
     if (!alive) return;
     
     if (firstClick) {
       const newGrid = FirstClick(grid, row, col, mineCount);
+      this.resetTimer();
+      this.startTimer();
       this.setState({grid: newGrid, firstClick: false});
     } else {
       let newGrid = grid;
       const isAlive = LeftClick(newGrid, row, col);
       if (!isAlive) {
         UpdateLoss(newGrid);
+        this.stopTimer();
       }
       this.setState({grid: newGrid, alive: isAlive});
     }
     if (HiddenSquares(grid) === 0) {
       this.sendWinCallback();
+      this.stopTimer();
     }
   }
 
@@ -75,7 +90,7 @@ export default class Grid extends Component {
   }
 
   render() {
-    const {grid, loading} = this.state;
+    const {grid, loading, time, mineCount} = this.state;
     if (loading) {
       return (
         'Loading...'
@@ -83,6 +98,9 @@ export default class Grid extends Component {
     }
     return (
       <>
+      <div className="timer" >
+        Mines left: {mineCount - Flags(grid)}<br/> Time: {time}
+      </div>
       <div className="grid">
       {grid.map((row, rowIndex) => {
         return (

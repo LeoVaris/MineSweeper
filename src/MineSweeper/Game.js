@@ -87,6 +87,11 @@ export default class Game extends Component {
       return ("regularbtn");
     }
   }
+
+  winText() {
+    if (this.state.hasWon)
+      return 'You Win!';
+  }
   
   render() {
     const {key, loading, option, width, height, mineCount} = this.state;
@@ -132,6 +137,9 @@ export default class Game extends Component {
           </button>
           <button className="newgame" type="submit">New Game</button>
         </form>
+      </div>
+      <div className="win">
+        {this.winText()}
       </div>
         <div key={key}>
           <Grid

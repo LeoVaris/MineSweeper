@@ -1,6 +1,19 @@
 .grid {
-  margin: 100px 0px;
+  margin: 0px 0px;
   font-size: 0px;
+  text-align: center;
+}
+
+.timer {
+  margin: 75px 0px 0px 0px;
+  color: red;
+  font-size: 20px;
+  text-align: center;
+}
+
+.win {
+  color: rgb(16, 206, 16);
+  font-size: 50px;
   text-align: center;
 }
 
