@@ -221,10 +221,12 @@ const isMine = (grid, row, col) => {
 const CreateMines = (grid, mineCount, startNode) => {
   let newGrid = grid;
   let minesPut = 0;
+  let safeSpace = 2;
+  if (grid.length * grid[0].length - 9 < mineCount) safeSpace = 1;
   while (minesPut < mineCount) {
     const pos = RandomPos(grid.length, grid[0].length);
     if (isMine(newGrid, pos.row, pos.col)) continue;
-    if (Math.abs(startNode.row - pos.row) < 2 && Math.abs(startNode.col - pos.col) < 2) continue;
+    if (Math.abs(startNode.row - pos.row) < safeSpace && Math.abs(startNode.col - pos.col) < safeSpace) continue;
     newGrid = getNewGridWithMine(newGrid, pos.row, pos.col);
     minesPut++;
   }

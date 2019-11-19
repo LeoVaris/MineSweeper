@@ -65,11 +65,11 @@ export default class Game extends Component {
   }
 
   Verifybomb(data) {
-    if (data[0] * data[1] < 10) return (1);
-    if (data[0] * data[1] - 9 >= data[2]) {
+    if (data[0] * data[1] < 2) return (0);
+    if (data[0] * data[1] - 1 >= data[2]) {
       return (data[2]);
     } else {
-      return (data[0] * data[1] - 9);
+      return (data[0] * data[1] - 1);
     }
   }
 
@@ -78,56 +78,61 @@ export default class Game extends Component {
     key++;
     this.setState({key: key, hasWon: false, minesLeft: this.state.mineCount})
   }
+
+  ButtonClassName(value) {
+    const {option} = this.state;
+    if (option === value) {
+      return ("regularbtn checked");
+    } else {
+      return ("regularbtn");
+    }
+  }
   
   render() {
-    const {key, loading, option, width, height, mineCount, minesLeft} = this.state;
+    const {key, loading, option, width, height, mineCount} = this.state;
     if (loading) {
       return ('Loading...');
     }
     return (
       <>
-        <button onClick={this.Restart}>
-            Restart
-        </button>
+      <div className="IO">
         <form onSubmit={this.handleNewGame}>
-          <div className="radio">
-            <label>
-              <input type="radio" value="beginner" checked={option === "beginner"} onChange={this.handleOptionChange}/>
-              {minesLeft}
-            </label>
-          </div>
-          <div className="radio">
-            <label>
-              <input type="radio" value="intermediate" checked={option === "intermediate"} onChange={this.handleOptionChange}/>
-              Intermediate
-            </label>
-          </div>
-          <div className="radio">
-            <label>
-              <input type="radio" value="expert" checked={option === "expert"} onChange={this.handleOptionChange}/>
-              Expert
-            </label>
-          </div>
-          <div className="radio">
-            <label>
+          <div className="buttons">
+            <label className={this.ButtonClassName("custom")}>
               <input type="radio" value="custom" checked={option === "custom"} onChange={this.handleOptionChange}/>
-              Custom&nbsp;<br/>
+              Custom
+            </label>
+            <label className={this.ButtonClassName("beginner")}> Beginner
+              <input type="radio" value="beginner" checked={option === "beginner"} onChange={this.handleOptionChange}/>
+            </label>
+            <label className={this.ButtonClassName("intermediate")}> Intermediate
+              <input type="radio" value="intermediate" checked={option === "intermediate"} onChange={this.handleOptionChange}/>
+            </label>
+            <label className={this.ButtonClassName("expert")}>
+              <input type="radio" value="expert" checked={option === "expert"} onChange={this.handleOptionChange}/>
+              Expert&nbsp;<br/>
+            </label>
+          </div>
+          <div className="regularbtn buttons">
+            <label>
+              Width:&nbsp;&nbsp;
+              <input className="custom-input" type="number" name="width" autoComplete="off" min={1} max={50} onChange={(e) => this.handleCustomGame(e, 0)}/>
             </label>
             <label>
-              Width:
-              <input className="custom-input" type="number" name="width" autoComplete="off" min={1} max={100} onChange={(e) => this.handleCustomGame(e, 0)}/>
-            </label>
-            <label>
-              <br/>Height:
-              <input className="custom-input" type="number" name="height" autoComplete="off" min={1} max={100} onChange={(e) => this.handleCustomGame(e, 1)}/>
+              <br/>Height:&nbsp;
+              <input className="custom-input" type="number" name="height" autoComplete="off" min={1} max={50} onChange={(e) => this.handleCustomGame(e, 1)}/>
             </label>
             <label> 
               <br/>Bombs:
-              <input className="custom-input" type="number" name="bombs" autoComplete="off" min={0} max={200} onChange={(e) => this.handleCustomGame(e, 2)}/>
+              <input className="custom-input" type="number" name="bombs" autoComplete="off" min={0} max={1000} onChange={(e) => this.handleCustomGame(e, 2)}/>
             </label>
           </div>
-          <button className="btn" type="submit">New Game</button>
+          <button className="button" onClick={this.Restart}>
+            Restart
+          </button>
+          <button className="newgame" type="submit">New Game</button>
         </form>
+      </div>
         <div key={key}>
           <Grid
             onContextMenu={this.handleClick}
