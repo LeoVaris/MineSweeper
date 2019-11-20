@@ -31,7 +31,7 @@ export default class Node extends Component {
     else if (gameWon) {
       if (isFlag) extraClassName = 'Node-flag'
       else if (isBomb) extraClassName = 'Node-bomb'
-      else if (isHidden) extraClassName = 'Node-hidden'
+      else if (isHidden) extraClassName = 'Node-flag'
       else extraClassName = `Node-${bombsAround}`
     }
     else {

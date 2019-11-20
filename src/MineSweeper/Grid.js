@@ -1,8 +1,10 @@
 import React, {Component} from 'react';
 import Node from './Node/Node';
+import AIMove from './AI/main';
 import './Game.css';
 
 export default class Grid extends Component {
+  _isMounted = false;
 
   constructor(props) {
     super(props);
@@ -23,15 +25,20 @@ export default class Grid extends Component {
     const {grid_width, grid_height, mineCount} = this.state;
     const grid = CreateGrid(grid_width, grid_height, mineCount);
     this.setState({grid, loading: false});
+    this._isMounted = true;
   }
 
+  componentWillUnmount() {
+    this.stopTimer();
+    this._isMounted = false;
+  }
   sendWinCallback() {
+    this.setState({hasWon: true});
     const data = {
       from: 'grid-win',
       hasWon: true,
     };
     this.props.parentCallback(data);
-    UpdateWin(this.state.grid);
   }
 
   sendMineCountCallback(flags) {
@@ -60,7 +67,7 @@ export default class Grid extends Component {
   handleOnClick(row, col) {
     const {firstClick, grid, mineCount, alive} = this.state;
     if (!alive) return;
-    
+    if (!this._isMounted) return;
     if (firstClick) {
       const newGrid = FirstClick(grid, row, col, mineCount);
       this.resetTimer();
@@ -70,7 +77,6 @@ export default class Grid extends Component {
       let newGrid = grid;
       const isAlive = LeftClick(newGrid, row, col);
       if (!isAlive) {
-        UpdateLoss(newGrid);
         this.stopTimer();
       }
       this.setState({grid: newGrid, alive: isAlive});
@@ -82,15 +88,29 @@ export default class Grid extends Component {
   }
 
   handleContextMenu = (e, row, col) => {
-    e.preventDefault();
+    if (!this._isMounted) return;
+    if (e !== undefined) e.preventDefault();
+
     const newGrid = RightClick(this.state.grid, row, col);
     this.setState({grid: newGrid});
     const flags = Flags(this.state.grid);
     this.sendMineCountCallback(flags);
   }
 
+  playAI = () => {
+    if (!this._isMounted) return;
+    setTimeout(() => {
+      const {grid, mineCount, firstClick} = this.state;
+      const {row, col, left} = AIMove(grid, mineCount, firstClick);
+      if (left) this.handleOnClick(row, col);
+      else this.handleContextMenu(undefined, row, col);
+      let {alive, hasWon} = this.state;
+      if (alive && !hasWon) this.playAI();
+    }, 50);
+  }
+
   render() {
-    const {grid, loading, time, mineCount} = this.state;
+    const {grid, loading, time, mineCount, hasWon, alive} = this.state;
     if (loading) {
       return (
         'Loading...'
@@ -98,6 +118,9 @@ export default class Grid extends Component {
     }
     return (
       <>
+      <button onClick={() => {this.playAI(); console.log("newgame")}}>
+        AI
+      </button>
       <div className="timer" >
         Mines left: {mineCount - Flags(grid)}<br/> Time: {time}
       </div>
@@ -106,7 +129,7 @@ export default class Grid extends Component {
         return (
           <div key={rowIndex}>
             {row.map((node, nodeIndex) => {
-              const {row, col, bombsAround, isHidden, isFlag, isBomb, gameWon, gameLost} = node;
+              const {row, col, bombsAround, isHidden, isFlag, isBomb} = node;
               return (
                 <Node 
                   key={nodeIndex}
@@ -116,8 +139,8 @@ export default class Grid extends Component {
                   isHidden={isHidden}
                   isBomb={isBomb}
                   isFlag={isFlag}
-                  gameWon={gameWon} 
-                  gameLost={gameLost}
+                  gameWon={hasWon} 
+                  gameLost={!alive}
                   onContextMenu={(e, row, col) => this.handleContextMenu(e, row, col)}
                   onClick={(row, col) => this.handleOnClick(row, col)}
                 ></Node>
@@ -159,8 +182,7 @@ const CreateNode = (row, col) => {
     isHidden: true,
     isBomb: false,
     isFlag: false,
-    gameWon: false,
-    gameLost: false,
+    isClear: false,
   })
 };
 
@@ -266,14 +288,6 @@ const UpdateMineCount = (grid) => {
   });
 }
 
-const UpdateWin = (grid) => {
-  grid.forEach(row => {
-    row.forEach(node => {
-      node.gameWon = true;
-    })
-  });
-}
-
 const Flags = (grid) => {
   let count = 0;
   grid.forEach(row => {
@@ -282,14 +296,6 @@ const Flags = (grid) => {
     })
   })
   return count;
-}
-
-const UpdateLoss = (grid) => {
-  grid.forEach(row => {
-    row.forEach(node => {
-      node.gameLost = true;
-    })
-  });
 }
 
 const CountNeighbors = (grid, row, col) => {

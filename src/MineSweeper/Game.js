@@ -121,15 +121,18 @@ export default class Game extends Component {
           <div className="regularbtn buttons">
             <label>
               Width:&nbsp;&nbsp;
-              <input className="custom-input" type="number" name="width" autoComplete="off" min={1} max={50} onChange={(e) => this.handleCustomGame(e, 0)}/>
+              <input className="custom-input" type="number" name="width" 
+                autoComplete="off" min={1} max={50} onChange={(e) => this.handleCustomGame(e, 0)}/>
             </label>
             <label>
               <br/>Height:&nbsp;
-              <input className="custom-input" type="number" name="height" autoComplete="off" min={1} max={50} onChange={(e) => this.handleCustomGame(e, 1)}/>
+              <input className="custom-input" type="number" name="height" 
+                autoComplete="off" min={1} max={50} onChange={(e) => this.handleCustomGame(e, 1)}/>
             </label>
             <label> 
               <br/>Bombs:
-              <input className="custom-input" type="number" name="bombs" autoComplete="off" min={0} max={1000} onChange={(e) => this.handleCustomGame(e, 2)}/>
+              <input className="custom-input" type="number" name="bombs" 
+                autoComplete="off" min={0} max={1000} onChange={(e) => this.handleCustomGame(e, 2)}/>
             </label>
           </div>
           <button className="button" onClick={this.Restart}>
