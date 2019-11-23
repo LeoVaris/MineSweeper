@@ -33,11 +33,10 @@ export default function AIMove(grid, mineCount, firstClick) {
   })
   let rest = hidden.filter(node => node.risk !== null);
   rest = sortByRisk(rest);
-  console.log("REST 0: " + rest[0]);
-  console.log(rest[0].risk);
-  console.log(rest[rest.length-1].risk);
-  if (rest[0].risk !== undefined) 
+  if (typeof rest[0] !== 'undefined') {
+    console.log("rest");
     return ({row: rest[0].row, col: rest[0].col, left: true});
+  }
   const lowRisk = toCheck.filter(node => node.bombsAround === 1);
   let ret1 = [];
   lowRisk.forEach(node => {

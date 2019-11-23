@@ -18,6 +18,7 @@ export default class Grid extends Component {
       alive: true,
       hasWon: false,
       time: 0,
+      aiSpeed: this.props.aiSpeed,
     }
   }
 
@@ -36,7 +37,6 @@ export default class Grid extends Component {
     this.setState({hasWon: true});
     const data = {
       from: 'grid-win',
-      hasWon: true,
     };
     this.props.parentCallback(data);
   }
@@ -46,6 +46,13 @@ export default class Grid extends Component {
     const data = {
       from: 'grid-minecount',
       minesLeft: minesLeft,
+    }
+    this.props.parentCallback(data);
+  }
+
+  sendLossCallback() {
+    const data = {
+      from: 'grid-loss',
     }
     this.props.parentCallback(data);
   }
@@ -78,6 +85,7 @@ export default class Grid extends Component {
       const isAlive = LeftClick(newGrid, row, col);
       if (!isAlive) {
         this.stopTimer();
+        this.sendLossCallback();
       }
       this.setState({grid: newGrid, alive: isAlive});
     }
@@ -98,6 +106,7 @@ export default class Grid extends Component {
   }
 
   playAI = () => {
+    const {aiSpeed} = this.state;
     if (!this._isMounted) return;
     setTimeout(() => {
       const {grid, mineCount, firstClick} = this.state;
@@ -106,7 +115,7 @@ export default class Grid extends Component {
       else this.handleContextMenu(undefined, row, col);
       let {alive, hasWon} = this.state;
       if (alive && !hasWon) this.playAI();
-    }, 50);
+    }, aiSpeed);
   }
 
   render() {

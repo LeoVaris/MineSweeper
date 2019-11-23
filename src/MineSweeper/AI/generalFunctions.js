@@ -42,15 +42,17 @@ function setLinks(grid) {
   clearLinks(grid);
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[0].length; x++) {
-      if (grid[y][x].bombsAround - flagsAround(grid, y, x) === 1 && hiddenSquares(grid, y, x).filter(node => !node.isFlag).length !== 1 && grid[y][x].isHidden && !grid[y][x].isFlag) {
+      if (grid[y][x].bombsAround - flagsAround(grid, y, x) === 1 && hiddenSquares(grid, y, x).filter(node => !node.isFlag).length !== 1 && !grid[y][x].isHidden && !grid[y][x].isFlag) { //  && grid[y][x].isHidden && !grid[y][x].isFlag
 
         const temp = [];
         const neighbors = hiddenSquares(grid, y, x).filter(node => !node.isFlag);
         neighbors.forEach(node => temp.push(node));
         neighbors.forEach(node => {
           const {row, col} = node;
-          grid[row][col].linked = true;
-          grid[row][col].links = [...temp];
+          if (grid[row][col].links.length >= temp.length || !grid[row][col].linked) {
+            grid[row][col].linked = true;
+            grid[row][col].links = [...temp];
+          }
         })
       }
     }
@@ -72,6 +74,24 @@ export function checkLinks(grid) {
               
               let numLinked = 0;
               const adjLinks = [];
+              if (hiddenAround[i].links.length === hiddenAround.length - 1) {
+                
+                const closeLinks = [];
+                if (hiddenAround[i].links.every(node => {
+                  closeLinks.push(node);
+                  return (hiddenAround.includes(node));
+                })) {
+                  console.log("safe link");
+                  for (let m = 0; m < hiddenAround.length; m++) {
+                    if (!closeLinks.includes(hiddenAround[m])) {
+                      const {row, col} = hiddenAround[m];
+                      grid[row][col].risk = 0;
+                      console.log("safe link111");
+                      break;
+                    }
+                  }
+                }
+              }
               for (let l = 0; l < hiddenAround[i].links.length; l++) {
 
                 if (hiddenAround.includes(hiddenAround[i].links[l])) {
@@ -87,6 +107,7 @@ export function checkLinks(grid) {
                   for (let m = 0; m < hiddenAround.length; m++) {
                     if (!adjLinks.includes(hiddenAround[m])) {
                       const {row, col} = hiddenAround[m];
+                      console.log("bomb link");
                       grid[row][col].risk = 100;
                     } 
                   }

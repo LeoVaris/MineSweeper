@@ -12,9 +12,11 @@ export default class Game extends Component {
       mineCount: 10,
       key: 0,
       hasWon: false,
+      hasLost: false,
       option: "beginner",
       minesLeft: 0,
       customData: [],
+      aiSpeed: 500,
     }
   }
 
@@ -27,11 +29,12 @@ export default class Game extends Component {
   Callback = (data) => {
     const {from} = data;
     if (from === 'grid-win') {
-      const {hasWon} = data;
-      this.setState({hasWon: hasWon});
+      this.setState({hasWon: true});
     } else if (from === 'grid-minecount') {
       const {minesLeft} = data;
       this.setState({minesLeft: minesLeft});
+    } else if (from === 'grid-loss') {
+      this.setState({hasLost: true});
     }
   }
 
@@ -44,6 +47,12 @@ export default class Game extends Component {
     const newData = customData;
     newData[index] = parseInt(e.target.value);
     this.setState({customData: newData});
+  }
+
+  changeAISpeed = (e) => {
+    e.preventDefault();
+    this.setState({aiSpeed: 1000 - e.target.value});
+    this.Restart();
   }
 
   handleNewGame = (e) => {
@@ -76,7 +85,7 @@ export default class Game extends Component {
   Restart = () => {
     let {key} = this.state;
     key++;
-    this.setState({key: key, hasWon: false, minesLeft: this.state.mineCount})
+    this.setState({key: key, hasWon: false, hasLost: false, minesLeft: this.state.mineCount})
   }
 
   ButtonClassName(value) {
@@ -92,9 +101,14 @@ export default class Game extends Component {
     if (this.state.hasWon)
       return 'You Win!';
   }
+
+  LossText() {
+    if (this.state.hasLost) 
+      return 'You Lost!';
+  }
   
   render() {
-    const {key, loading, option, width, height, mineCount} = this.state;
+    const {key, loading, option, width, height, mineCount, aiSpeed} = this.state;
     if (loading) {
       return ('Loading...');
     }
@@ -138,11 +152,21 @@ export default class Game extends Component {
           <button className="button" onClick={this.Restart}>
             Restart
           </button>
-          <button className="newgame" type="submit">New Game</button>
+          <button className="newgame" type="submit">
+            New Game
+          </button>
+          <div className="ai">
+            AI speed<br/>
+            <input type="range" name="points" min="50" max="950" step="50" defaultValue="500" onChange={this.changeAISpeed}></input>
+          </div>
+          
         </form>
       </div>
       <div className="win">
         {this.winText()}
+      </div>
+      <div className="loss">
+        {this.LossText()}
       </div>
         <div key={key}>
           <Grid
@@ -151,6 +175,7 @@ export default class Game extends Component {
             width={width}
             height={height}
             mineCount={mineCount}
+            aiSpeed={aiSpeed}
           ></Grid>
         </div>
         

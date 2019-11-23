@@ -17,6 +17,16 @@
   text-align: center;
 }
 
+.loss {
+  color: red;
+  font-size: 50px;
+  text-align: center;
+}
+
+.ai {
+  padding-top: 20px;
+}
+
 .custom-input {
   width: 40px;
 }  
