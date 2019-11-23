@@ -43,10 +43,8 @@ export default function AIMove(grid, mineCount, firstClick) {
     ret1 = ret1.concat(hiddenSquares(grid, node.row, node.col).filter(node => !node.isFlag));
   })
   if (ret1.length > 0) {
-    console.log("lowGuess");
     return ({row: ret1[0].row, col: ret1[0].col, left: true});
   }
-  console.log("guess");
   return ({row: hidden[0].row, col: hidden[0].col, left: true});
 }
 

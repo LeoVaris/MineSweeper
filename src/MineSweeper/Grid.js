@@ -106,8 +106,8 @@ export default class Grid extends Component {
   }
 
   playAI = () => {
-    const {aiSpeed} = this.state;
-    if (!this._isMounted) return;
+    const {aiSpeed, alive, hasWon} = this.state;
+    if (!this._isMounted || !alive || hasWon) return;
     setTimeout(() => {
       const {grid, mineCount, firstClick} = this.state;
       const {row, col, left} = AIMove(grid, mineCount, firstClick);
@@ -127,9 +127,12 @@ export default class Grid extends Component {
     }
     return (
       <>
-      <button onClick={() => {this.playAI(); console.log("newgame")}}>
-        AI
-      </button>
+      <div className="aibtn">
+        <button className="newgame" onClick={() => this.playAI()}>
+          Play AI
+        </button>
+      </div>
+      
       <div className="timer" >
         Mines left: {mineCount - Flags(grid)}<br/> Time: {time}
       </div>

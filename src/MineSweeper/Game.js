@@ -157,7 +157,7 @@ export default class Game extends Component {
           </button>
           <div className="ai">
             AI speed<br/>
-            <input type="range" name="points" min="50" max="950" step="50" defaultValue="500" onChange={this.changeAISpeed}></input>
+            <input className="slider" type="range" name="points" min="10" max="990" step="10" defaultValue="500" onChange={this.changeAISpeed}></input>
           </div>
           
         </form>
