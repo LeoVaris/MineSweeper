@@ -183,6 +183,9 @@ const CreateNode = (row, col) => {
     isBomb: false,
     isFlag: false,
     isClear: false,
+    linked: false,
+    risk: null,
+    links: [],
   })
 };
 

@@ -29,6 +29,78 @@ export function complicatedRiskUpdate(grid, row, col) {
   })
 }
 
+function clearLinks(grid) {
+  for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid[0].length; x++) {
+      grid[y][x].linked = false;
+      grid[y][x].links = [];
+    }
+  }
+}
+
+function setLinks(grid) {
+  clearLinks(grid);
+  for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid[0].length; x++) {
+      if (grid[y][x].bombsAround - flagsAround(grid, y, x) === 1 && hiddenSquares(grid, y, x).filter(node => !node.isFlag).length !== 1 && grid[y][x].isHidden && !grid[y][x].isFlag) {
+
+        const temp = [];
+        const neighbors = hiddenSquares(grid, y, x).filter(node => !node.isFlag);
+        neighbors.forEach(node => temp.push(node));
+        neighbors.forEach(node => {
+          const {row, col} = node;
+          grid[row][col].linked = true;
+          grid[row][col].links = [...temp];
+        })
+      }
+    }
+  }
+}
+
+export function checkLinks(grid) {
+  setLinks(grid);
+  for (let y = 0; y < grid.length; y++) {
+    for (let x = 0; x < grid[0].length; x++) {
+      if (!grid[y][x].isHidden && !grid[y][x].isFlag && grid[y][x].risk !== 100 && grid[y][x].risk !== 0) {
+        
+        const node = grid[y][x];
+        const hiddenAround = hiddenSquares(grid, y, x).filter(node => !node.isFlag);
+        if (node.bombsAround > 1 && node.bombsAround - flagsAround(grid, node.row, node.col) > 1) {
+          
+          for (let i = 0; i < hiddenAround.length; i++) {
+            if (hiddenAround[i].linked) {
+              
+              let numLinked = 0;
+              const adjLinks = [];
+              for (let l = 0; l < hiddenAround[i].links.length; l++) {
+
+                if (hiddenAround.includes(hiddenAround[i].links[l])) {
+                  
+                  numLinked++;
+                  adjLinks.push(hiddenAround[i].links[l]);
+                }
+              }
+              if (numLinked > 1) {
+                
+                if (hiddenAround.length - (numLinked - 1) === node.bombsAround) {
+                  
+                  for (let m = 0; m < hiddenAround.length; m++) {
+                    if (!adjLinks.includes(hiddenAround[m])) {
+                      const {row, col} = hiddenAround[m];
+                      grid[row][col].risk = 100;
+                    } 
+                  }
+                  return;
+                }
+              }
+            }
+          }
+        } 
+      }
+    }
+  }
+}
+
 export function flagsAround(grid, row, col) {
   return (neighbors(grid, row, col).filter(node => node.isFlag));
 }

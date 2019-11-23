@@ -1,14 +1,12 @@
 
-import {simpleBombUpdate, simpleSafeUpdate, 
+import {simpleBombUpdate, simpleSafeUpdate, checkLinks,
   gridToArray, complicatedRiskUpdate, hiddenSquares} from './generalFunctions';
-
-import {TankSolver} from './TankSolver';
 
 
 export default function AIMove(grid, mineCount, firstClick) {
   if (firstClick) {
-    const row = grid.length - 1
-    const col = grid[0].length - 1
+    const row = Math.floor(grid.length / 2)
+    const col = Math.floor(grid[0].length / 2)
     return ({row, col, left: true});
   }
   const arr = gridToArray(grid);
@@ -18,30 +16,28 @@ export default function AIMove(grid, mineCount, firstClick) {
     !node.isFlag &&
     node.bombsAround > 0
   );
+  checkLinks(grid);
   toCheck.forEach(node => {
     const row = node.row;
     const col = node.col;
     simpleBombUpdate(grid, row, col);
     simpleSafeUpdate(grid, row, col);
   })
+  
   const safes = hidden.filter(node => node.risk === 0);
   if (safes.length > 0) return ({row: safes[0].row, col: safes[0].col, left: true});
   const bombs = hidden.filter(node => node.risk === 100);
   if (bombs.length > 0) return ({row: bombs[0].row, col: bombs[0].col, left: false});
-  console.log("working");
-  const ret = TankSolver(grid);
-  if (ret !== null) {
-    console.table(ret);
-    console.log("it works");
-    return (ret);
-  } 
   toCheck.forEach(node => {
     complicatedRiskUpdate(grid, node.row, node.col);
   })
-  /*const rest = hidden.filter(node => node.risk !== null);
-  sortByRisk(rest);
+  let rest = hidden.filter(node => node.risk !== null);
+  rest = sortByRisk(rest);
+  console.log("REST 0: " + rest[0]);
   console.log(rest[0].risk);
-  return ({row: rest[0].row, col: rest[0].col, left:true});*/
+  console.log(rest[rest.length-1].risk);
+  if (rest[0].risk !== undefined) 
+    return ({row: rest[0].row, col: rest[0].col, left: true});
   const lowRisk = toCheck.filter(node => node.bombsAround === 1);
   let ret1 = [];
   lowRisk.forEach(node => {
@@ -56,12 +52,5 @@ export default function AIMove(grid, mineCount, firstClick) {
 }
 
 function sortByRisk(arr) {
-  arr.sort((a, b) => a.risk - b.risk); 
-}
-
-const RandomPos = (rows, cols) => {
-  return ({
-    row: Math.floor(Math.random() * rows),
-    col: Math.floor(Math.random() * cols),
-  })
+  return (arr.sort((a, b) => a.risk - b.risk));
 }
