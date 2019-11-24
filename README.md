@@ -1,7 +1,9 @@
 ## Minesweeper game + AI project
+
+You can try this app at https://leovaris.github.io/MineSweeper/<br />
 ### Game
 This version is a copy of the original minesweeper.<br />
-Only thing missing is the complicated clicks but otherwise it has all you need.<br />
+Only thing missing is the complicated clicks but otherwise it has all you need<br />
 For ex. when creating game it always reveals all neighbors if possible.<br />
 ### AI
 The AI obviously has the simple cases where bombs left = hidden squares left<br />
@@ -10,7 +12,7 @@ It also looks for links in the squares so it can solve more complex scenarios.<b
 On beginner i'd estimate it can solve the 95% of the time.<br />
 On intermediate it can solve the about 85% of the time.<br />
 On expert it doesn't really perform... i'd say it solves the grid about 15% of the time.<br />
-This AI is not perfect!.<br />
+This AI is not perfect!<br />
 
 ## Available Scripts
 
