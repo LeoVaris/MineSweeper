@@ -1,4 +1,6 @@
 
+// If there's same amount of flags than
+// bombs then the others are clear
 export function simpleSafeUpdate(grid, row, col) {
   const node = grid[row][col];
   const bombsAround = node.bombsAround;
@@ -8,6 +10,8 @@ export function simpleSafeUpdate(grid, row, col) {
   }
 }
 
+// If same amount of hiddensquares than 
+// bombs then all hidden are bombs
 export function simpleBombUpdate(grid, row, col) {
   const node = grid[row][col];
   const bombsAround = node.bombsAround;
@@ -17,6 +21,7 @@ export function simpleBombUpdate(grid, row, col) {
   }
 }
 
+// Calculates the % that this node is bombå
 export function complicatedRiskUpdate(grid, row, col) {
   const node = grid[row][col];
   if (node.risk === 0 || node.risk === 100) return;
@@ -29,6 +34,7 @@ export function complicatedRiskUpdate(grid, row, col) {
   })
 }
 
+// Resets all link data
 function clearLinks(grid) {
   for (let y = 0; y < grid.length; y++) {
     for (let x = 0; x < grid[0].length; x++) {
@@ -38,6 +44,7 @@ function clearLinks(grid) {
   }
 }
 
+// Generates the links 
 function setLinks(grid) {
   clearLinks(grid);
   for (let y = 0; y < grid.length; y++) {
@@ -60,6 +67,7 @@ function setLinks(grid) {
   }
 }
 
+// Checks the links so we can solve more challenging positions
 export function checkLinks(grid) {
   setLinks(grid);
   for (let y = 0; y < grid.length; y++) {
@@ -120,14 +128,17 @@ export function checkLinks(grid) {
   }
 }
 
+// Returns flags around
 export function flagsAround(grid, row, col) {
   return (neighbors(grid, row, col).filter(node => node.isFlag));
 }
 
+// Returns hidden squares around
 export function hiddenSquares(grid, row, col) {
   return (neighbors(grid, row, col).filter(node => node.isHidden));
 }
 
+// returns all neighborsw
 export function neighbors(grid, row, col) {
   const neighbors = [];
   const rows = grid.length-1;
@@ -147,6 +158,7 @@ export function neighbors(grid, row, col) {
   return neighbors;
 }
 
+// 2d grid to 1d array
 export function gridToArray(grid) {
   const nodes = [];
   for (const row of grid) {

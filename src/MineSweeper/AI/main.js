@@ -10,6 +10,7 @@ export default function AIMove(grid, mineCount, firstClick) {
     const col = Math.floor(grid[0].length / 2)
     return ({row, col, left: true});
   }
+  // Converts grid to 1d array
   const arr = gridToArray(grid);
   const hidden = arr.filter(node => node.isHidden && !node.isFlag);
   const toCheck = arr.filter(node => 
@@ -26,15 +27,18 @@ export default function AIMove(grid, mineCount, firstClick) {
     simpleBombUpdate(grid, row, col);
     simpleSafeUpdate(grid, row, col);
   })
-  
+  // Safe squares
   const safes = hidden.filter(node => node.risk === 0);
   if (safes.length > 0) return ({row: safes[0].row, col: safes[0].col, left: true});
+  // Bombs
   const bombs = hidden.filter(node => node.risk === 100);
   if (bombs.length > 0) return ({row: bombs[0].row, col: bombs[0].col, left: false});
+  // If there's no certain bombs or safespaces do guessing
   toCheck.forEach(node => {
     // Do the risk calculation for these nodes
     complicatedRiskUpdate(grid, node.row, node.col);
   })
+  // Array of nodes that have their risk calculated
   let rest = hidden.filter(node => node.risk !== null);
   rest = sortByRisk(rest);
   // if theres filtered options

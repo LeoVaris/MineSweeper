@@ -21,11 +21,13 @@ export default class Game extends Component {
   }
 
   componentDidMount() {
+    // set data after loading
     const {mineCount} = this.state;
     const customData = [9, 9, 10];
     this.setState({loading: false, minesLeft: mineCount, customData: customData});
   }
 
+  // Called when receiving data from grid
   Callback = (data) => {
     const {from} = data;
     if (from === 'grid-win') {
@@ -38,10 +40,12 @@ export default class Game extends Component {
     }
   }
 
+  // Handles the gamemode selection
   handleOptionChange = (e) => {
     this.setState({option: e.target.value});
   }
 
+  // inserts the data from the custom game options
   handleCustomGame = (e, index) => {
     const {customData} = this.state;
     const newData = customData;
@@ -49,12 +53,14 @@ export default class Game extends Component {
     this.setState({customData: newData});
   }
 
+  // Handler for changing the AI speed
   changeAISpeed = (e) => {
     e.preventDefault();
     this.setState({aiSpeed: 1000 - e.target.value});
     this.Restart();
   }
 
+  // When new game is created
   handleNewGame = (e) => {
     e.preventDefault();
     const {option, customData} = this.state;
@@ -73,6 +79,7 @@ export default class Game extends Component {
     this.Restart();
   }
 
+  // Will verify that its possible to make this grid
   Verifybomb(data) {
     if (data[0] * data[1] < 2) return (0);
     if (data[0] * data[1] - 1 >= data[2]) {
@@ -82,12 +89,14 @@ export default class Game extends Component {
     }
   }
 
+  // reset the game
   Restart = () => {
     let {key} = this.state;
     key++;
     this.setState({key: key, hasWon: false, hasLost: false, minesLeft: this.state.mineCount})
   }
 
+  // Handles styles for the gamemodes
   ButtonClassName(value) {
     const {option} = this.state;
     if (option === value) {
@@ -97,11 +106,13 @@ export default class Game extends Component {
     }
   }
 
+  // text if game has been won
   winText() {
     if (this.state.hasWon)
       return 'You Win!';
   }
 
+  // text if game has been lost
   LossText() {
     if (this.state.hasLost) 
       return 'You Lost!';
@@ -114,9 +125,12 @@ export default class Game extends Component {
     }
     return (
       <>
+      {/* all IO*/ }
+      
       <div className="IO">
         <form onSubmit={this.handleNewGame}>
           <div className="buttons">
+            {/**gamemode selector */}
             <label className={this.ButtonClassName("custom")}>
               <input type="radio" value="custom" checked={option === "custom"} onChange={this.handleOptionChange}/>
               Custom
@@ -132,6 +146,7 @@ export default class Game extends Component {
               Expert&nbsp;<br/>
             </label>
           </div>
+          {/**custom input form */}
           <div className="regularbtn buttons">
             <label>
               Width:&nbsp;&nbsp;
@@ -157,17 +172,20 @@ export default class Game extends Component {
           </button>
           <div className="ai">
             AI speed<br/>
-            <input className="slider" type="range" name="points" min="10" max="990" step="10" defaultValue="500" onChange={this.changeAISpeed}></input>
+            <input className="slider" type="range" name="points" min="10" max="990" step="10" 
+              defaultValue="500" onChange={this.changeAISpeed}></input>
           </div>
           
         </form>
       </div>
+      {/**extra text for certain gamestates */}
       <div className="win">
         {this.winText()}
       </div>
       <div className="loss">
         {this.LossText()}
       </div>
+      {/**Renders the grid */}
         <div key={key}>
           <Grid
             onContextMenu={this.handleClick}
@@ -178,7 +196,6 @@ export default class Game extends Component {
             aiSpeed={aiSpeed}
           ></Grid>
         </div>
-        
       </>
     );
   }

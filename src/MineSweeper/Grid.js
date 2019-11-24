@@ -22,9 +22,10 @@ export default class Grid extends Component {
     }
   }
 
+  // initializes grid after loading
   componentDidMount() {
-    const {grid_width, grid_height, mineCount} = this.state;
-    const grid = CreateGrid(grid_width, grid_height, mineCount);
+    const {grid_width, grid_height} = this.state;
+    const grid = CreateGrid(grid_width, grid_height);
     this.setState({grid, loading: false});
     this._isMounted = true;
   }
@@ -33,6 +34,8 @@ export default class Grid extends Component {
     this.stopTimer();
     this._isMounted = false;
   }
+
+  // Send data to game component
   sendWinCallback() {
     this.setState({hasWon: true});
     const data = {
@@ -57,6 +60,7 @@ export default class Grid extends Component {
     this.props.parentCallback(data);
   }
 
+  // Timer functions
   startTimer() {
     this.timer = setInterval(() => this.setState({
       time: this.state.time + 1
@@ -71,6 +75,7 @@ export default class Grid extends Component {
     this.setState({time: 0});
   }
 
+  // Handles left click
   handleOnClick(row, col) {
     const {firstClick, grid, mineCount, alive} = this.state;
     if (!alive) return;
@@ -95,6 +100,7 @@ export default class Grid extends Component {
     }
   }
 
+  // handleRight click
   handleContextMenu = (e, row, col) => {
     if (!this._isMounted) return;
     if (e !== undefined) e.preventDefault();
@@ -105,6 +111,7 @@ export default class Grid extends Component {
     this.sendMineCountCallback(flags);
   }
 
+  // Starts the ai
   playAI = () => {
     const {aiSpeed, alive, hasWon} = this.state;
     if (!this._isMounted || !alive || hasWon) return;
@@ -127,16 +134,18 @@ export default class Grid extends Component {
     }
     return (
       <>
+      {/* Button to start the AI*/}
       <div className="aibtn">
         <button className="newgame" onClick={() => this.playAI()}>
           Play AI
         </button>
       </div>
-      
+      {/* Info to the user */}
       <div className="timer" >
         Mines left: {mineCount - Flags(grid)}<br/> Time: {time}
       </div>
       <div className="grid">
+        {/*Renders every node component */}
       {grid.map((row, rowIndex) => {
         return (
           <div key={rowIndex}>
@@ -166,7 +175,7 @@ export default class Grid extends Component {
     );
   }
 }
-
+// Generates bombs
 const FirstClick = (grid, row, col, mineCount) => {
   CreateMines(grid, mineCount, grid[row][col]);
   UpdateMineCount(grid);
@@ -174,7 +183,8 @@ const FirstClick = (grid, row, col, mineCount) => {
   return (grid);
 }
 
-const CreateGrid = (width, height, mineCount) => {
+
+const CreateGrid = (width, height) => {
   let grid = []
   for (let row = 0; row < height; row++) {
     const rowArr = []
@@ -201,6 +211,7 @@ const CreateNode = (row, col) => {
   })
 };
 
+// toggles flags
 const RightClick = (grid, row, col) => {
   const newGrid = grid.slice();
   const node = newGrid[row][col];
@@ -267,10 +278,7 @@ const getNewGridWithMine = (grid, row, col) => {
 }
 
 const isMine = (grid, row, col) => {
-  const newGrid = grid.slice();
-  const node = newGrid[row][col];
-  const {isBomb} = node;
-  return isBomb;
+  return (grid[row][col].isBomb);
 }
 
 const CreateMines = (grid, mineCount, startNode) => {
@@ -278,7 +286,7 @@ const CreateMines = (grid, mineCount, startNode) => {
   let minesPut = 0;
   let safeSpace = 2;
   if (grid.length * grid[0].length - 9 < mineCount) safeSpace = 1;
-  while (minesPut < mineCount) {
+  while (minesPut < mineCount) { // inserts all mines
     const pos = RandomPos(grid.length, grid[0].length);
     if (isMine(newGrid, pos.row, pos.col)) continue;
     if (Math.abs(startNode.row - pos.row) < safeSpace && Math.abs(startNode.col - pos.col) < safeSpace) continue;
@@ -313,23 +321,9 @@ const Flags = (grid) => {
   return count;
 }
 
+// returns mines around
 const CountNeighbors = (grid, row, col) => {
-  const neighbors = [];
-  const rows = grid.length-1;
-  const cols = grid[0].length-1;
-  // Top row
-  if (row > 0 && col > 0) neighbors.push(grid[row - 1][col - 1]);
-  if (row > 0) neighbors.push(grid[row - 1][col]);
-  if (row > 0 && col < cols) neighbors.push(grid[row - 1][col + 1]);
-  // Middle
-  if (col > 0) neighbors.push(grid[row][col - 1]);
-  if (col < cols) neighbors.push(grid[row][col + 1]);
-  // Bottom row
-  if (row < rows && col > 0) neighbors.push(grid[row + 1][col - 1]);
-  if (row < rows) neighbors.push(grid[row + 1][col]);
-  if (row < rows && col < cols) neighbors.push(grid[row + 1][col + 1]);
-
-  return neighbors.filter(node => node.isBomb).length;
+  return getNeighbors(grid, row, col).filter(node => node.isBomb).length;
 }
 
 const getNeighbors = (grid, row, col) => {
