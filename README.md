@@ -9,8 +9,8 @@ For ex. when creating game it always reveals all neighbors if possible.<br />
 The AI obviously has the simple cases where bombs left = hidden squares left<br />
 and flags = bombs around.<br />
 It also looks for links in the squares so it can solve more complex scenarios.<br />
-On beginner i'd estimate it can solve the 95% of the time.<br />
-On intermediate it can solve the about 85% of the time.<br />
+On beginner i'd estimate it can solve the grid about 95% of the time.<br />
+On intermediate it can solve the grid about 85% of the time.<br />
 On expert it doesn't really perform... i'd say it solves the grid about 15% of the time.<br />
 This AI is not perfect!<br />
 
