@@ -1,11 +1,11 @@
-import Game from './MineSweeper/Game';
 import React from 'react';
-import './App.css';
+
+import Game from './MineSweeper/Game';
 
 function App() {
   return (
     <Game />
-  );
+  )
 }
 
-export default App; 
+export default App;

@@ -1,7 +1,10 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+
+import './Game.css';
+
 import Node from './Node/Node';
 import AIMove from './AI/main';
-import './Game.css';
+
 
 export default class Grid extends Component {
   _isMounted = false;

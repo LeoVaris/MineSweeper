@@ -1,10 +1,11 @@
-import React, {Component} from 'react';
-import Grid from './Grid';
+import React, {Component} from 'react'
+
+import Grid from './Grid'
 
 export default class Game extends Component {
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       loading: true,
       width: 9,
@@ -22,106 +23,132 @@ export default class Game extends Component {
 
   componentDidMount() {
     // set data after loading
-    const {mineCount} = this.state;
-    const customData = [9, 9, 10];
-    this.setState({loading: false, minesLeft: mineCount, customData: customData});
+    const {mineCount} = this.state
+    const customData = [9, 9, 10]
+    this.setState({loading: false, minesLeft: mineCount, customData: customData})
   }
 
   // Called when receiving data from grid
   Callback = (data) => {
-    const {from} = data;
+    const {from} = data
     if (from === 'grid-win') {
-      this.setState({hasWon: true});
+      this.setState({hasWon: true})
     } else if (from === 'grid-minecount') {
-      const {minesLeft} = data;
-      this.setState({minesLeft: minesLeft});
+      const {minesLeft} = data
+      this.setState({minesLeft: minesLeft})
     } else if (from === 'grid-loss') {
-      this.setState({hasLost: true});
+      this.setState({hasLost: true})
     }
   }
 
   // Handles the gamemode selection
   handleOptionChange = (e) => {
-    this.setState({option: e.target.value});
+    this.setState({option: e.target.value})
   }
 
   // inserts the data from the custom game options
   handleCustomGame = (e, index) => {
-    const {customData} = this.state;
-    const newData = customData;
-    newData[index] = parseInt(e.target.value);
-    this.setState({customData: newData});
+    const {customData} = this.state
+    const newData = customData
+    newData[index] = parseInt(e.target.value)
+    this.setState({customData: newData})
   }
 
   // Handler for changing the AI speed
   changeAISpeed = (e) => {
-    e.preventDefault();
-    this.setState({aiSpeed: 1000 - e.target.value});
-    this.Restart();
+    e.preventDefault()
+    this.setState({aiSpeed: 1000 - e.target.value})
+    this.Restart()
   }
 
   // When new game is created
   handleNewGame = (e) => {
-    e.preventDefault();
-    const {option, customData} = this.state;
+    e.preventDefault()
+    const {option, customData} = this.state
     if (option === "beginner") {
-      this.setState({width: 9, height: 9, mineCount: 10, minesLeft: this.state.mineCount});
+      this.setState({width: 9, height: 9, mineCount: 10, minesLeft: this.state.mineCount})
     } else if (option === "intermediate") {
-      this.setState({width: 16, height: 16, mineCount:40, minesLeft: this.state.mineCount});
+      this.setState({width: 16, height: 16, mineCount:40, minesLeft: this.state.mineCount})
     } else if (option === "expert") {
-      this.setState({width: 30, height: 16, mineCount: 99, minesLeft: this.state.mineCount});
+      this.setState({width: 30, height: 16, mineCount: 99, minesLeft: this.state.mineCount})
     } else if (option === "custom") {
       if (customData.every(atr => !isNaN(atr))) {
-        const bombs = this.Verifybomb(customData);
-        this.setState({width: customData[0], height: customData[1], mineCount: bombs, minesLeft: this.state.mineCount});
-      } else return;
+        const bombs = this.Verifybomb(customData)
+        this.setState({width: customData[0], height: customData[1], mineCount: bombs, minesLeft: this.state.mineCount})
+      } else return
     }
-    this.Restart();
+    this.Restart()
   }
 
   // Will verify that its possible to make this grid
   Verifybomb(data) {
-    if (data[0] * data[1] < 2) return (0);
+    if (data[0] * data[1] < 2) return (0)
     if (data[0] * data[1] - 1 >= data[2]) {
-      return (data[2]);
+      return (data[2])
     } else {
-      return (data[0] * data[1] - 1);
+      return (data[0] * data[1] - 1)
     }
   }
 
   // reset the game
   Restart = () => {
-    let {key} = this.state;
-    key++;
+    let {key} = this.state
+    key++
     this.setState({key: key, hasWon: false, hasLost: false, minesLeft: this.state.mineCount})
   }
 
   // Handles styles for the gamemodes
   ButtonClassName(value) {
-    const {option} = this.state;
+    const {option} = this.state
     if (option === value) {
-      return ("regularbtn checked");
+      return ("regularbtn checked")
     } else {
-      return ("regularbtn");
+      return ("regularbtn")
     }
+  }
+
+  customInput() {
+    if (this.state.option !== 'custom') {
+      return null
+    }
+
+    return (
+      <div className="regularbtn buttons">
+        <label>
+          Width:&nbsp;&nbsp;
+          <input className="custom-input" type="number" name="width" 
+            autoComplete="off" min={1} max={25} onChange={(e) => this.handleCustomGame(e, 0)}/>
+        </label>
+        <label>
+          <br/>Height:&nbsp;
+          <input className="custom-input" type="number" name="height" 
+            autoComplete="off" min={1} max={25} onChange={(e) => this.handleCustomGame(e, 1)}/>
+        </label>
+        <label> 
+          <br/>Bombs:
+          <input className="custom-input" type="number" name="bombs" 
+            autoComplete="off" min={0} max={1000} onChange={(e) => this.handleCustomGame(e, 2)}/>
+        </label>
+      </div>
+    )
   }
 
   // text if game has been won
   winText() {
     if (this.state.hasWon)
-      return 'You Win!';
+      return 'You Win!'
   }
 
   // text if game has been lost
   LossText() {
     if (this.state.hasLost) 
-      return 'You Lost!';
+      return 'You Lost!'
   }
   
   render() {
-    const {key, loading, option, width, height, mineCount, aiSpeed} = this.state;
+    const {key, loading, option, width, height, mineCount, aiSpeed} = this.state
     if (loading) {
-      return ('Loading...');
+      return ('Loading...')
     }
     return (
       <>
@@ -147,33 +174,14 @@ export default class Game extends Component {
             </label>
           </div>
           {/**custom input form */}
-          <div className="regularbtn buttons">
-            <label>
-              Width:&nbsp;&nbsp;
-              <input className="custom-input" type="number" name="width" 
-                autoComplete="off" min={1} max={50} onChange={(e) => this.handleCustomGame(e, 0)}/>
-            </label>
-            <label>
-              <br/>Height:&nbsp;
-              <input className="custom-input" type="number" name="height" 
-                autoComplete="off" min={1} max={50} onChange={(e) => this.handleCustomGame(e, 1)}/>
-            </label>
-            <label> 
-              <br/>Bombs:
-              <input className="custom-input" type="number" name="bombs" 
-                autoComplete="off" min={0} max={1000} onChange={(e) => this.handleCustomGame(e, 2)}/>
-            </label>
-          </div>
-          <button className="button" onClick={this.Restart}>
-            Restart
-          </button>
+          {this.customInput()}
           <button className="newgame" type="submit">
             New Game
           </button>
           <div className="ai">
             AI speed<br/>
-            <input className="slider" type="range" name="points" min="10" max="990" step="10" 
-              defaultValue="500" onChange={this.changeAISpeed}></input>
+            <input className="slider" type="range" name="points" min="100" max="990" step="10" 
+              defaultValue="550" onChange={this.changeAISpeed}></input>
           </div>
           
         </form>
@@ -197,6 +205,6 @@ export default class Game extends Component {
           ></Grid>
         </div>
       </>
-    );
+    )
   }
 }
